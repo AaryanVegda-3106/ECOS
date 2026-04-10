@@ -45,6 +45,8 @@ model User {
   roleId           String?     @map("role_id")
   name             String
   email            String      @unique
+  semester         Int?
+  contribution     String?     // Storing short string describing their contributions
   passwordHash     String      @map("password_hash")
   isActive         Boolean     @default(true) @map("is_active")
   lastLoginAt      DateTime?   @map("last_login_at")

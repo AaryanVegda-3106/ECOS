@@ -25,6 +25,26 @@ async function main() {
   console.log("✅ Committee created:", committee.name);
 
   // Create Roles
+  const devRole = await prisma.role.create({
+    data: {
+      committeeId: committee.id,
+      name: "Developer",
+      tier: "MASTER",
+      permissions: JSON.stringify({ all: true }),
+      responsibilities: JSON.stringify(["Build and maintain ECOS", "Manage deployments"]),
+    },
+  });
+
+  const foundingMemberRole = await prisma.role.create({
+    data: {
+      committeeId: committee.id,
+      name: "Founding Member",
+      tier: "MASTER",
+      permissions: JSON.stringify({ all: true }),
+      responsibilities: JSON.stringify(["Vision building", "Strategic Oversight"]),
+    },
+  });
+
   const masterRole = await prisma.role.create({
     data: {
       committeeId: committee.id,
@@ -97,7 +117,30 @@ async function main() {
 
   console.log("✅ 7 Roles created");
 
-  // Create Users (passwords are plaintext for dev — matches auth.ts dummy check)
+  const devUser = await prisma.user.create({
+    data: {
+      committeeId: committee.id,
+      roleId: devRole.id,
+      name: "System Developer",
+      email: "developer@ieeesb.org",
+      passwordHash: "dev123",
+      semester: 6,
+      contribution: "Built ECOS core platform and deployment pipelines",
+    },
+  });
+
+  const founder = await prisma.user.create({
+    data: {
+      committeeId: committee.id,
+      roleId: foundingMemberRole.id,
+      name: "Aaryan Singh",
+      email: "founder@ieeesb.org",
+      passwordHash: "founder123",
+      semester: 8,
+      contribution: "Established the branch core charter and led first 5 major hackathons",
+    },
+  });
+
   const advisor = await prisma.user.create({
     data: {
       committeeId: committee.id,
@@ -105,6 +148,8 @@ async function main() {
       name: "Dr. Rajesh Kumar",
       email: "advisor@ieeesb.org",
       passwordHash: "admin123",
+      semester: null,
+      contribution: "Guided over 20+ award-winning project teams",
     },
   });
 
@@ -115,6 +160,8 @@ async function main() {
       name: "Advik Gupta",
       email: "chair@ieeesb.org",
       passwordHash: "chair123",
+      semester: 6,
+      contribution: "Hosted IEEE TechSprint 2025 and managed 50+ members",
     },
   });
 
@@ -125,6 +172,8 @@ async function main() {
       name: "Priya Sharma",
       email: "vicechair@ieeesb.org",
       passwordHash: "vc123",
+      semester: 6,
+      contribution: "Increased active membership by 35% in Q3",
     },
   });
 
@@ -135,6 +184,8 @@ async function main() {
       name: "Rohan Mehta",
       email: "secretary@ieeesb.org",
       passwordHash: "sec123",
+      semester: 5,
+      contribution: "Streamlined communication with alumni network",
     },
   });
 
@@ -145,6 +196,8 @@ async function main() {
       name: "Aisha Patel",
       email: "treasurer@ieeesb.org",
       passwordHash: "tres123",
+      semester: 5,
+      contribution: "Secured $5K in sponsor funds for annual flagship event",
     },
   });
 
@@ -155,6 +208,8 @@ async function main() {
       name: "Vikram Singh",
       email: "techlead@ieeesb.org",
       passwordHash: "tech123",
+      semester: 7,
+      contribution: "Led development of open-source campus map tool",
     },
   });
 
@@ -165,6 +220,8 @@ async function main() {
       name: "Neha Reddy",
       email: "neha@ieeesb.org",
       passwordHash: "member123",
+      semester: 4,
+      contribution: "Organized 3 guest lectures",
     },
   });
 
@@ -175,10 +232,12 @@ async function main() {
       name: "Arjun Das",
       email: "arjun@ieeesb.org",
       passwordHash: "member123",
+      semester: 3,
+      contribution: "Top contributor in open source hacktoberfest",
     },
   });
 
-  console.log("✅ 8 Users created");
+  console.log("✅ 10 Users created");
 
   // Create Pipelines
   const eventPipeline = await prisma.pipeline.create({
@@ -506,9 +565,12 @@ async function main() {
   console.log("✅ 3 Task Comments created");
 
   console.log("\n🎉 Seed complete! You can login with:");
+  console.log("   developer@ieeesb.org / dev123");
+  console.log("   founder@ieeesb.org / founder123");
   console.log("   chair@ieeesb.org / chair123");
   console.log("   advisor@ieeesb.org / admin123");
   console.log("   vicechair@ieeesb.org / vc123");
+  console.log("   treasurer@ieeesb.org / tres123");
   console.log("   techlead@ieeesb.org / tech123");
 }
 

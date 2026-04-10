@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { LucideCommand } from "lucide-react";
+import { LucideCommand, Code } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,6 +29,26 @@ export default function LoginPage() {
         router.push("/dashboard");
       } else {
         alert(data.error || "Login Failed");
+      }
+    } catch {
+      alert("Network Error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBypass = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:4000/api/v1/auth/bypass", {
+        method: "POST"
+      });
+      const data = await res.json();
+      if (res.ok) {
+        document.cookie = `access_token=${data.token}; path=/; max-age=900`;
+        router.push("/dashboard");
+      } else {
+        alert(data.error || "Bypass Failed");
       }
     } catch {
       alert("Network Error");
@@ -84,9 +104,12 @@ export default function LoginPage() {
                 />
               </div>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex flex-col gap-3">
               <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-500 text-white transition-all shadow-[0_0_15px_rgba(79,70,229,0.3)]" disabled={loading}>
                 {loading ? "Authenticating..." : "Authorize"}
+              </Button>
+              <Button onClick={handleBypass} type="button" variant="outline" className="w-full border-zinc-700 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all" disabled={loading}>
+                <Code className="w-4 h-4 mr-2" /> Developer Bypass
               </Button>
             </CardFooter>
           </form>
