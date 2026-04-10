@@ -14,6 +14,7 @@ import {
   X,
   LucideCommand,
   ChevronLeft,
+  Home,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -213,6 +214,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Menu className="h-4 w-4" />
               </Button>
             )}
+            {/* Home button */}
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link href="/">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-400 hover:text-white">
+                      <Home className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="bg-zinc-800 text-white border-zinc-700">
+                  Homepage
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           <div className="flex items-center gap-2">
