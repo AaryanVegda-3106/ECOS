@@ -58,7 +58,7 @@ async function main() {
   const chairRole = await prisma.role.create({
     data: {
       committeeId: committee.id,
-      name: "Chairperson",
+      name: "SB Chairperson",
       tier: "LEADERSHIP",
       permissions: JSON.stringify({ manageUsers: true, managePipelines: true, manageTasks: true }),
       responsibilities: JSON.stringify(["Lead the branch", "Coordinate committees", "Strategic planning"]),
@@ -68,7 +68,7 @@ async function main() {
   const viceChairRole = await prisma.role.create({
     data: {
       committeeId: committee.id,
-      name: "Vice Chairperson",
+      name: "SB Vice chair",
       tier: "LEADERSHIP",
       permissions: JSON.stringify({ managePipelines: true, manageTasks: true }),
       responsibilities: JSON.stringify(["Support the chair", "Manage day-to-day operations"]),
@@ -78,10 +78,20 @@ async function main() {
   const secretaryRole = await prisma.role.create({
     data: {
       committeeId: committee.id,
-      name: "Secretary",
+      name: "SB Secretary",
       tier: "OPERATIONS",
       permissions: JSON.stringify({ manageTasks: true, viewReports: true }),
       responsibilities: JSON.stringify(["Document proceedings", "Manage communications"]),
+    },
+  });
+
+  const webmasterRole = await prisma.role.create({
+    data: {
+      committeeId: committee.id,
+      name: "SB Webmaster",
+      tier: "OPERATIONS",
+      permissions: JSON.stringify({ manageSystem: true, viewLogs: true }),
+      responsibilities: JSON.stringify(["Maintain ECOS platform", "Manage system access"]),
     },
   });
 
@@ -115,7 +125,7 @@ async function main() {
     },
   });
 
-  console.log("✅ 7 Roles created");
+  console.log("✅ 10 Roles created");
 
   const devUser = await prisma.user.create({
     data: {
@@ -201,6 +211,18 @@ async function main() {
     },
   });
 
+  const webmaster = await prisma.user.create({
+    data: {
+      committeeId: committee.id,
+      roleId: webmasterRole.id,
+      name: "Kevin Mitnick",
+      email: "webmaster@ieeesb.org",
+      passwordHash: "web123",
+      semester: 6,
+      contribution: "Optimized ECOS backend response times by 40%",
+    },
+  });
+
   const techLead = await prisma.user.create({
     data: {
       committeeId: committee.id,
@@ -237,7 +259,7 @@ async function main() {
     },
   });
 
-  console.log("✅ 10 Users created");
+  console.log("✅ 11 Users created");
 
   // Create Pipelines
   const eventPipeline = await prisma.pipeline.create({
@@ -572,6 +594,7 @@ async function main() {
   console.log("   vicechair@ieeesb.org / vc123");
   console.log("   treasurer@ieeesb.org / tres123");
   console.log("   techlead@ieeesb.org / tech123");
+  console.log("   webmaster@ieeesb.org / web123");
 }
 
 main()
