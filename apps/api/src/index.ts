@@ -22,6 +22,7 @@ import rolesRouter from "./routes/roles";
 import pipelinesRouter from "./routes/pipelines";
 import tasksRouter from "./routes/tasks";
 import notificationsRouter from "./routes/notifications";
+import aiRouter from "./routes/ai";
 
 app.use(cors());
 app.use(express.json());
@@ -34,6 +35,7 @@ app.use("/api/v1/roles", rolesRouter);
 app.use("/api/v1/pipelines", pipelinesRouter);
 app.use("/api/v1/tasks", tasksRouter);
 app.use("/api/v1/notifications", notificationsRouter);
+app.use("/api/v1/ai", aiRouter);
 
 // Health check
 app.get("/health", (req, res) => {

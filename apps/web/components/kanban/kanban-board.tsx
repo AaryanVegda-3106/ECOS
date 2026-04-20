@@ -38,10 +38,10 @@ function Column({ col, tasks }: { col: typeof COLUMNS[0], tasks: Task[] }) {
 
   return (
     <div 
-      className={`flex flex-col flex-1 shrink-0 min-w-[300px] max-w-[350px] rounded-xl border border-zinc-800/80 bg-zinc-900/30 overflow-hidden ${isOver ? 'ring-2 ring-indigo-500/50 bg-zinc-900/60' : ''}`}
+      className={`flex flex-col flex-1 shrink-0 min-w-[300px] max-w-[350px] rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50 dark:bg-zinc-900/30 overflow-hidden ${isOver ? 'ring-2 ring-indigo-500/50 bg-indigo-50 dark:bg-zinc-900/60' : ''}`}
     >
-      <div className="p-3 border-b border-zinc-800/80 bg-zinc-950/40 flex items-center justify-between">
-        <h3 className="font-semibold text-sm text-zinc-200">{col.title} <span className="ml-2 text-xs font-normal text-zinc-500 bg-zinc-800 px-2 py-0.5 rounded-full">{tasks.length}</span></h3>
+      <div className="p-3 border-b border-zinc-200 dark:border-zinc-800/80 bg-zinc-100/50 dark:bg-zinc-950/40 flex items-center justify-between">
+        <h3 className="font-semibold text-sm text-zinc-800 dark:text-zinc-200">{col.title} <span className="ml-2 text-xs font-normal text-zinc-500 bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 rounded-full">{tasks.length}</span></h3>
       </div>
       <div 
         ref={setNodeRef} 

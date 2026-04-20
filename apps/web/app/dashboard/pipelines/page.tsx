@@ -20,11 +20,11 @@ export default function PipelinesPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-white tracking-tight">Pipelines</h1>
+          <h1 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Pipelines</h1>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-[200px] rounded-xl bg-zinc-900/50" />
+            <Skeleton key={i} className="h-[200px] rounded-xl bg-zinc-100 dark:bg-zinc-900/50" />
           ))}
         </div>
       </div>
@@ -35,7 +35,7 @@ export default function PipelinesPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Pipelines</h1>
+          <h1 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Pipelines</h1>
           <p className="text-zinc-400 mt-1">Manage workflows and kanban boards</p>
         </div>
         <Button className="bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)]">
@@ -50,11 +50,11 @@ export default function PipelinesPage() {
           const progress = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
 
           return (
-            <Card key={pipeline.id} className="bg-zinc-900/40 border-zinc-800/50 backdrop-blur-xl flex flex-col transition-all hover:bg-zinc-900/60 hover:border-indigo-500/30 group">
+            <Card key={pipeline.id} className="bg-white dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-800/50 backdrop-blur-xl flex flex-col transition-all hover:bg-zinc-50 dark:hover:bg-zinc-900/60 hover:border-indigo-500/30 group">
               <CardHeader>
                 <div className="flex justify-between items-start gap-4">
                   <div className="space-y-1">
-                    <CardTitle className="text-lg text-zinc-100 group-hover:text-indigo-400 transition-colors">
+                    <CardTitle className="text-lg text-zinc-800 dark:text-zinc-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                       {pipeline.title}
                     </CardTitle>
                     <CardDescription className="text-zinc-500 line-clamp-2">

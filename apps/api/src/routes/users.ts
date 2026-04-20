@@ -4,8 +4,8 @@ import { withAuth, withRole, AuthRequest } from "../middleware/auth";
 
 const router = Router();
 
-// List users (Master, Chair)
-router.get("/", withAuth, withRole("MASTER", "LEADERSHIP"), async (req: AuthRequest, res) => {
+// List users (All authenticated users for directory/notifications)
+router.get("/", withAuth, async (req: AuthRequest, res) => {
   try {
     const committeeId = req.user?.committeeId;
     const users = await prisma.user.findMany({

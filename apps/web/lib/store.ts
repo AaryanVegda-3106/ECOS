@@ -238,3 +238,75 @@ export const useStatsStore = create<StatsState>((set) => ({
     }
   },
 }));
+
+// AI Store
+interface AISession {
+  id: string;
+  agentType: string;
+  messages: { role: string; content: string }[];
+  startedAt: string;
+  endedAt: string | null;
+}
+
+interface AIState {
+  sessions: AISession[];
+  activeAgent: "CONTENT" | "DRIVE" | "MEDIA" | "BUDGET" | "DATA";
+  loading: boolean;
+  setActiveAgent: (agent: AIState["activeAgent"]) => void;
+  fetchSessions: (agentType?: string) => Promise<void>;
+  sendMessage: (message: string, agentType: string, taskId?: string) => Promise<void>;
+}
+
+export const useAIStore = create<AIState>((set, get) => ({
+  sessions: [],
+  activeAgent: "CONTENT",
+  loading: false,
+  setActiveAgent: (activeAgent) => set({ activeAgent }),
+  fetchSessions: async (agentType) => {
+    try {
+      set({ loading: true });
+      const query = agentType ? `?agentType=${agentType}` : "";
+      const data = await apiFetch<{ data: AISession[] }>(`/ai/sessions${query}`);
+      set({ sessions: data.data, loading: false });
+    } catch {
+      set({ loading: false });
+    }
+  },
+  sendMessage: async (message, agentType, taskId) => {
+    try {
+      set({ loading: true });
+      // Optimistic update
+      const activeSession = get().sessions.find(s => s.endedAt === null && s.agentType === agentType);
+      
+      if (activeSession) {
+        set({
+           sessions: get().sessions.map(s => s.id === activeSession.id ? {
+             ...s,
+             messages: [...s.messages, { role: "user", content: message }]
+           } : s)
+        });
+      }
+
+      const res = await apiFetch<{ reply: string; session: AISession }>("/ai/chat", {
+        method: "POST",
+        body: JSON.stringify({ message, agentType, taskId }),
+      });
+
+      // Parse messages if returned as JSON string from backend
+      const parsedSession = {
+        ...res.session,
+        messages: typeof res.session.messages === "string"
+          ? JSON.parse(res.session.messages)
+          : res.session.messages,
+      };
+
+      // Update with backend session mapping
+      set({
+        loading: false,
+        sessions: [parsedSession, ...get().sessions.filter(s => s.id !== parsedSession.id)]
+      });
+    } catch (err) {
+      set({ loading: false });
+    }
+  }
+}));

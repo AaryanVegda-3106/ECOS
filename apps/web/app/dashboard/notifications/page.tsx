@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Bell, CheckCircle2, AlertCircle } from "lucide-react";
+import { Bell, CheckCircle2, AlertCircle, Plus } from "lucide-react";
 import { useNotificationStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { NotificationComposer } from "@/components/notification-composer";
 
 export default function NotificationsPage() {
   const { notifications, loading, fetchNotifications, markRead, markAllRead } = useNotificationStore();
@@ -16,10 +17,10 @@ export default function NotificationsPage() {
   if (loading) {
     return (
       <div className="space-y-6 max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-white tracking-tight">Notifications</h1>
+        <h1 className="text-3xl font-bold text-zinc-950 dark:text-white tracking-tight">Notifications</h1>
         <div className="space-y-3">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-20 bg-zinc-900/50 rounded-lg animate-pulse" />
+            <div key={i} className="h-20 bg-zinc-100 dark:bg-zinc-900/50 rounded-lg animate-pulse" />
           ))}
         </div>
       </div>
@@ -30,20 +31,30 @@ export default function NotificationsPage() {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Notifications</h1>
-          <p className="text-zinc-400 mt-1">Stay updated with activities across ECOS</p>
+          <h1 className="text-3xl font-bold text-zinc-950 dark:text-white tracking-tight">Notifications</h1>
+          <p className="text-zinc-500 dark:text-zinc-400 mt-1">Stay updated with activities across ECOS</p>
         </div>
-        {unreadExist && (
-          <Button 
-            variant="outline" 
-            className="border-zinc-700 text-zinc-300 hover:text-white"
-            onClick={() => markAllRead()}
-          >
-            <CheckCircle2 className="w-4 h-4 mr-2" /> Mark all as read
-          </Button>
-        )}
+        <div className="flex items-center gap-3">
+          <NotificationComposer 
+             onSuccess={() => fetchNotifications()}
+             trigger={
+               <Button className="bg-indigo-600 hover:bg-indigo-500 text-white shadow-md transition-all">
+                 <Plus className="w-4 h-4 mr-2" /> Compose Message
+               </Button>
+             }
+          />
+          {unreadExist && (
+            <Button 
+              variant="outline" 
+              className="border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white"
+              onClick={() => markAllRead()}
+            >
+              <CheckCircle2 className="w-4 h-4 mr-2" /> Mark all as read
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="space-y-3">

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useTaskStore, usePipelineStore, Task } from "@/lib/store";
 import KanbanBoard from "@/components/kanban/kanban-board";
+import { AddTaskDialog } from "@/components/kanban/add-task-dialog";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Plus } from "lucide-react";
@@ -16,6 +17,7 @@ export default function PipelineKanbanPage() {
   const { pipelines, fetchPipelines } = usePipelineStore();
   
   const [pipeline, setPipeline] = useState<any>(null);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchTasks(pipelineId);
@@ -55,18 +57,21 @@ export default function PipelineKanbanPage() {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="rounded-full bg-zinc-900 text-zinc-400 hover:text-white"
+            className="rounded-full bg-zinc-100 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
             onClick={() => router.push("/dashboard/pipelines")}
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">{pipeline.title}</h1>
+            <h1 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">{pipeline.title}</h1>
             <p className="text-sm text-zinc-400">{pipeline.description}</p>
           </div>
         </div>
         <div className="flex gap-2">
-          <Button className="bg-indigo-600 hover:bg-indigo-500 text-white gap-2">
+          <Button 
+            className="bg-indigo-600 hover:bg-indigo-500 text-white gap-2"
+            onClick={() => setAddDialogOpen(true)}
+          >
             <Plus className="w-4 h-4" /> Add Task
           </Button>
         </div>
@@ -75,6 +80,12 @@ export default function PipelineKanbanPage() {
       <div className="flex-1 min-h-0">
         <KanbanBoard tasks={tasks} pipelineId={pipelineId} />
       </div>
+
+      <AddTaskDialog
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+        pipelineId={pipelineId}
+      />
     </div>
   );
 }

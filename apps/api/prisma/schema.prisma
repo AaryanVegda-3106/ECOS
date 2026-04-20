@@ -17,6 +17,7 @@ model Committee {
   users         User[]
   pipelines     Pipeline[]
   notifications Notification[]
+  channels      Channel[]
 
   @@map("committees")
 }
@@ -63,6 +64,8 @@ model User {
   sentNotifications Notification[] @relation("Sender")
   receivedNotifications Notification[] @relation("Recipient")
   aiSessions       AiSession[]
+  channelMembers   ChannelMember[]
+  sentMessages     Message[]
 
   @@index([committeeId], name: "idx_users_committee")
   @@map("users")
@@ -170,4 +173,49 @@ model AiSession {
   user         User?       @relation(fields: [userId], references: [id])
 
   @@map("ai_sessions")
+}
+
+// ── Communication System ─────────────────────────────────────────
+
+model Channel {
+  id           String          @id @default(uuid())
+  committeeId  String?         @map("committee_id")
+  name         String
+  type         String          // GENERAL | ROLE | DM
+  description  String?
+  createdAt    DateTime        @default(now()) @map("created_at")
+
+  committee    Committee?      @relation(fields: [committeeId], references: [id])
+  members      ChannelMember[]
+  messages     Message[]
+
+  @@map("channels")
+}
+
+model ChannelMember {
+  id        String   @id @default(uuid())
+  channelId String   @map("channel_id")
+  userId    String   @map("user_id")
+  joinedAt  DateTime @default(now()) @map("joined_at")
+
+  channel   Channel  @relation(fields: [channelId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([channelId, userId])
+  @@map("channel_members")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  channelId String   @map("channel_id")
+  senderId  String   @map("sender_id")
+  content   String
+  mentions  String   @default("[]") // JSON array of user IDs
+  sentAt    DateTime @default(now()) @map("sent_at")
+
+  channel   Channel  @relation(fields: [channelId], references: [id])
+  sender    User     @relation(fields: [senderId], references: [id])
+
+  @@index([channelId], name: "idx_messages_channel")
+  @@map("messages")
 }

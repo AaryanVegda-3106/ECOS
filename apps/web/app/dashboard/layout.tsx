@@ -15,6 +15,7 @@ import {
   LucideCommand,
   ChevronLeft,
   Home,
+  Bot,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,16 +34,29 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuthStore, useNotificationStore } from "@/lib/store";
 import { connectSocket, disconnectSocket } from "@/lib/socket";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { RoleSwitcher } from "@/components/role-switcher";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/dashboard/pipelines", label: "Pipelines", icon: Columns3 },
   { href: "/dashboard/members", label: "Members", icon: Users },
   { href: "/dashboard/notifications", label: "Notifications", icon: Bell },
+  { href: "/dashboard/ai", label: "AI Assistant", icon: Bot },
 ];
+
+
 
 function SidebarContent({ collapsed, onToggle }: { collapsed: boolean; onToggle?: () => void }) {
   const pathname = usePathname();
+  const { user } = useAuthStore();
+
+  const filteredNavItems = navItems.filter(item => {
+    if (item.label === "Members") {
+      return ["MASTER", "LEADERSHIP"].includes(user?.role?.tier || "");
+    }
+    return true;
+  });
 
   return (
     <div className="flex flex-col h-full">
@@ -53,7 +67,7 @@ function SidebarContent({ collapsed, onToggle }: { collapsed: boolean; onToggle?
         </div>
         {!collapsed && (
           <div className="overflow-hidden">
-            <h2 className="text-sm font-bold text-white tracking-tight">ECOS</h2>
+            <h2 className="text-sm font-bold text-zinc-900 dark:text-white tracking-tight">ECOS</h2>
             <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Control Panel</p>
           </div>
         )}
@@ -61,7 +75,7 @@ function SidebarContent({ collapsed, onToggle }: { collapsed: boolean; onToggle?
           <Button
             variant="ghost"
             size="icon"
-            className="ml-auto h-7 w-7 text-zinc-500 hover:text-white"
+            className="ml-auto h-7 w-7 text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
             onClick={onToggle}
           >
             <ChevronLeft className="h-4 w-4" />
@@ -74,7 +88,7 @@ function SidebarContent({ collapsed, onToggle }: { collapsed: boolean; onToggle?
       {/* Nav */}
       <ScrollArea className="flex-1 px-3 py-4">
         <nav className="space-y-1">
-          {navItems.map((item) => {
+          {filteredNavItems.map((item) => {
             const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
             return (
               <TooltipProvider key={item.href} delayDuration={0}>
@@ -84,8 +98,8 @@ function SidebarContent({ collapsed, onToggle }: { collapsed: boolean; onToggle?
                       href={item.href}
                       className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
                         isActive
-                          ? "bg-indigo-600/15 text-indigo-400 border border-indigo-500/20 shadow-[0_0_15px_rgba(79,70,229,0.1)]"
-                          : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+                          ? "bg-indigo-600/15 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shadow-[0_0_15px_rgba(79,70,229,0.1)]"
+                          : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50"
                       }`}
                     >
                       <item.icon className={`w-4 h-4 shrink-0 ${isActive ? "text-indigo-400" : "text-zinc-500 group-hover:text-zinc-300"}`} />
@@ -94,7 +108,7 @@ function SidebarContent({ collapsed, onToggle }: { collapsed: boolean; onToggle?
                     </Link>
                   </TooltipTrigger>
                   {collapsed && (
-                    <TooltipContent side="right" className="bg-zinc-800 text-white border-zinc-700">
+                    <TooltipContent side="right" className="bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white border-zinc-200 dark:border-zinc-700">
                       {item.label}
                     </TooltipContent>
                   )}
@@ -112,7 +126,7 @@ function SidebarContent({ collapsed, onToggle }: { collapsed: boolean; onToggle?
         <div className="p-3">
           <div className="rounded-lg bg-gradient-to-br from-indigo-600/10 to-purple-600/10 border border-indigo-500/10 p-3">
             <p className="text-[11px] text-zinc-400">IEEE Student Branch</p>
-            <p className="text-xs text-zinc-300 font-medium">VITB 2025-2026</p>
+            <p className="text-xs text-zinc-600 dark:text-zinc-300 font-medium">VITB 2025-2026</p>
           </div>
         </div>
       )}
@@ -159,7 +173,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
           <p className="text-sm text-zinc-500">Loading ECOS...</p>
@@ -176,10 +190,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     .slice(0, 2) || "?";
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex">
       {/* Desktop Sidebar */}
       <aside
-        className={`hidden lg:flex flex-col border-r border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl transition-all duration-300 ${
+        className={`hidden lg:flex flex-col border-r border-zinc-200 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl transition-all duration-300 ${
           collapsed ? "w-[68px]" : "w-[240px]"
         }`}
       >
@@ -189,7 +203,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Main Area */}
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Top Bar */}
-        <header className="h-14 border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-xl flex items-center justify-between px-4 lg:px-6 sticky top-0 z-30">
+        <header className="h-14 border-b border-zinc-200 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl flex items-center justify-between px-4 lg:px-6 sticky top-0 z-30">
           <div className="flex items-center gap-3">
             {/* Mobile hamburger */}
             <Sheet>
@@ -232,6 +246,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Role Switcher (MASTER only) */}
+            <RoleSwitcher />
+
             {/* Notification bell */}
             <Link href="/dashboard/notifications">
               <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-400 hover:text-white relative">
@@ -239,6 +256,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <NotificationDot />
               </Button>
             </Link>
+
+            {/* Theme toggle */}
+            <ThemeToggle />
 
             {/* User dropdown */}
             <DropdownMenu>

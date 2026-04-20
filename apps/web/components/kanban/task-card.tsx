@@ -25,7 +25,7 @@ export function TaskCard({ task }: { task: Task }) {
   };
 
   return (
-    <Card className="bg-zinc-900/70 border-zinc-700 hover:border-indigo-500/50 cursor-grab active:cursor-grabbing transition-colors group shadow-sm">
+    <Card className="bg-white dark:bg-zinc-900/70 border-zinc-200 dark:border-zinc-700 hover:border-indigo-500/50 cursor-grab active:cursor-grabbing transition-colors group shadow-sm">
       <CardContent className="p-3">
         <div className="flex justify-between items-start mb-2">
           <Badge variant="outline" className={`text-[10px] px-1.5 py-0 rounded font-semibold ${getPriorityColor(task.priority)}`}>
